@@ -157,29 +157,39 @@
     });
   }
 
-  /* Announcement marquee under the header. Offers: SHOP_SETTINGS.announcements.
-     The list is duplicated (aria-hidden) so the loop is seamless; CSS pauses it on hover
-     and stops it for reduced motion. */
+  /* Rotating announcement bar under the header. Messages: SHOP_SETTINGS.announcements,
+     or a default built from the weekly deal. Arrows always work; auto-rotate stops for reduced motion. */
   function setupAnnouncements() {
-    const track = $("[data-announce]");
-    if (!track) return;
-    const list = (Array.isArray(S.announcements) ? S.announcements : []).filter((m) => m && m.text);
-    if (!list.length) return;
-    const group = (hidden) => {
-      const g = document.createElement("div");
-      g.className = "announce-group";
-      if (hidden) g.setAttribute("aria-hidden", "true");
-      list.forEach((m) => {
-        const el = document.createElement(m.href ? "a" : "span");
-        el.className = "announce-item";
-        el.textContent = m.text;
-        if (m.href) { el.href = m.href; if (hidden) el.tabIndex = -1; }
-        g.append(el);
-      });
-      return g;
+    const el = $("[data-topbar]");
+    if (!el) return;
+    const deal = S.weeklyDeal || {};
+    const list = Array.isArray(S.announcements) && S.announcements.length
+      ? S.announcements
+      : [{ text: `Use code ${deal.code || ""} for ${String(deal.title || "a discount").toLowerCase()}`, href: "deals.html" }];
+    let i = 0;
+    let timer;
+    const show = (n) => {
+      i = (n + list.length) % list.length;
+      const msg = list[i];
+      el.textContent = "";
+      if (msg.href) {
+        const a = document.createElement("a");
+        a.href = msg.href;
+        a.textContent = msg.text;
+        el.append(a);
+      } else {
+        el.textContent = msg.text;
+      }
     };
-    track.textContent = "";
-    track.append(group(false), group(true), group(true), group(true));
+    const restart = () => {
+      clearInterval(timer);
+      if (!reducedMotion && list.length > 1) timer = setInterval(() => show(i + 1), 5500);
+    };
+    $("[data-topbar-prev]")?.addEventListener("click", () => { show(i - 1); restart(); });
+    $("[data-topbar-next]")?.addEventListener("click", () => { show(i + 1); restart(); });
+    if (list.length < 2) $$(".topbar-btn").forEach((b) => { b.hidden = true; });
+    show(0);
+    restart();
   }
 
   /* ---------- 3. Icons + placeholder art ---------- */
@@ -260,30 +270,12 @@
     </svg>`;
   }
 
-  /* Photos under images/ are served as .avif with the .jpg as fallback. If an .avif is missing
-     (or the browser can't show AVIF), the global error handler in setupImageFallback() swaps in the .jpg. */
-  function imgTag(src, alt, { eager = false, cls = "" } = {}) {
-    const local = /^images\/.+\.jpe?g$/i.test(src);
-    const main = local ? src.replace(/\.jpe?g$/i, ".avif") : src;
-    return `<img${cls ? ` class="${cls}"` : ""} src="${esc(main)}"${local ? ` data-fallback="${esc(src)}"` : ""} alt="${esc(alt)}" width="480" height="640" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
-  }
-  function setupImageFallback() {
-    document.addEventListener("error", (e) => {
-      const img = e.target;
-      if (img.tagName === "IMG" && img.dataset.fallback && img.getAttribute("src") !== img.dataset.fallback) {
-        img.src = img.dataset.fallback;
-      }
-    }, true);
-    // images that already failed before this listener existed
-    $$("img[data-fallback]").forEach((img) => { if (img.complete && !img.naturalWidth) img.src = img.dataset.fallback; });
-  }
-
   /* Media for a product: real photo if provided, drawn placeholder otherwise */
-  function productMedia(p, index = 0, { eager = false, cls = "" } = {}) {
+  function productMedia(p, index = 0, { eager = false } = {}) {
     const imgs = Array.isArray(p.images) ? p.images.filter(Boolean) : [];
     if (imgs.length) {
       const src = imgs[Math.min(index, imgs.length - 1)];
-      return imgTag(src, `${p.name}${index ? ` (photo ${index + 1})` : ""}`, { eager, cls });
+      return `<img src="${esc(src)}" alt="${esc(p.name)}${index ? ` (photo ${index + 1})` : ""}" width="800" height="1000" ${eager ? "" : 'loading="lazy"'} decoding="async">`;
     }
     const views = ["front", "side", "logo close-up"];
     return artSVG(catArt(p.category), p.color, p.accent, { label: `${p.name}, placeholder drawing (${views[index] || "front"})`, view: index });
@@ -292,11 +284,10 @@
 
   /* ---------- 4. Product cards ---------- */
   function badgesHTML(p) {
-    if (p.stock === "out") return `<span class="badge badge--out">Sold out</span>`;
-    let html = "";
-    if (p.isNew) html += `<span class="badge badge--new">New</span>`;
-    if (p.stock === "low") html += `<span class="badge badge--low">Low stock</span>`;
-    if (onSale(p)) html += `<span class="badge badge--sale">Sale</span>`;
+    const st = STOCK[p.stock] || STOCK.in;
+    let html = `<span class="badge badge--${st.cls}">${st.label}</span>`;
+    if (p.isNew && p.stock !== "out") html = `<span class="badge badge--new">New</span>` + html;
+    if (onSale(p) && p.stock !== "out") html += `<span class="badge badge--sale">Sale</span>`;
     return html;
   }
   function priceHTML(p) {
@@ -308,19 +299,11 @@
 
   function cardHTML(p) {
     const out = p.stock === "out";
-    const hasAlt = Array.isArray(p.images) && p.images.filter(Boolean).length > 1;
-    return `<article class="p-card${out ? " is-out" : ""}${hasAlt ? " has-alt" : ""}">
-      <div class="p-media-wrap">
-        <button class="p-media" type="button" tabindex="-1" data-open-product="${esc(p.id)}" aria-label="View details: ${esc(p.name)}">
-          <span class="p-badges">${badgesHTML(p)}</span>
-          ${productMedia(p, 0, { cls: "p-img" })}
-          ${hasAlt ? productMedia(p, 1, { cls: "p-img p-img--alt" }) : ""}
-        </button>
-        <div class="p-actions">
-          ${out ? "" : `<button class="p-action" type="button" data-quick-add="${esc(p.id)}" aria-label="Quick add ${esc(p.name)} to order list">${icon("plus", "icon--sm")}Quick add</button>`}
-          <button class="p-action p-action--ghost" type="button" data-open-product="${esc(p.id)}" aria-label="Quick view ${esc(p.name)}">Quick view</button>
-        </div>
-      </div>
+    return `<article class="p-card${out ? " is-out" : ""}">
+      <button class="p-media" type="button" tabindex="-1" data-open-product="${esc(p.id)}" aria-label="View details: ${esc(p.name)}">
+        <span class="p-badges">${badgesHTML(p)}</span>
+        ${productMedia(p)}
+      </button>
       <div class="p-info">
         <span class="p-cat">${esc(catName(p.category))}</span>
         <h3 class="p-name"><a href="products.html?item=${encodeURIComponent(p.id)}" data-open-product="${esc(p.id)}">${esc(p.name)}</a></h3>
@@ -359,55 +342,32 @@
       renderCards(arrivals, list);
     }
 
-    const strip = $("#category-strip");
-    if (strip) {
-      const tiles = activeCats().map((c) => {
+    const tiles = $("#category-tiles");
+    if (tiles) {
+      /* Only categories that have products, on a 12-column grid with no empty cells:
+         up to 4 share one row; otherwise the first row takes 2 (or 4) tiles so the rest fill rows of 3.
+         Mobile is 2 across, with the first tile full width when the count is odd. */
+      const cats = activeCats();
+      const n = cats.length;
+      const firstRow = n <= 4 ? n : n % 3 === 2 ? 2 : n % 3 === 1 ? 4 : 3;
+      const spans = cats.map((_, i) => (i < firstRow ? 12 / firstRow : 4));
+      tiles.innerHTML = cats.map((c, i) => {
         const items = PRODUCTS.filter((p) => p.category === c.id);
         const photo = items.map((p) => (Array.isArray(p.images) ? p.images[0] : "")).find(Boolean);
-        return { href: `products.html?cat=${encodeURIComponent(c.id)}`, name: c.name, meta: `${items.length} ${items.length === 1 ? "item" : "items"}`, photo };
+        const media = photo
+          ? `<img class="cat-photo" src="${esc(photo)}" alt="" loading="lazy" decoding="async">`
+          : artSVG(c.art, i % 2 ? "#262626" : "#B3121B", i % 2 ? "#B3121B" : "#ffffff", { bg: false, cls: "cat-art", decorative: true });
+        return `<a class="cat-tile${spans[i] >= 6 ? " cat-tile--lg" : ""}" href="products.html?cat=${encodeURIComponent(c.id)}">
+          ${media}
+          <span class="cat-label"><h3>${esc(c.name)}</h3><span class="count">${items.length} ${items.length === 1 ? "item" : "items"}</span></span>
+        </a>`;
+      }).join("");
+      $$(".cat-tile", tiles).forEach((el, i) => {
+        el.style.setProperty("--span", spans[i]);
+        el.style.setProperty("--span-m", n % 2 && i === 0 ? 2 : 1);
       });
-      tiles.push({ href: "products.html#services-title", name: "Cap Care", meta: "From \u20B1150", photo: "images/gallery/cap-services-price-list.jpg" });
-      strip.innerHTML = tiles.map((t) => `<a class="cat-card" href="${esc(t.href)}">
-          ${t.photo ? imgTag(t.photo, "", { cls: "cat-card-img" }) : ""}
-          <span class="cat-card-name">${esc(t.name)}</span>
-          <span class="cat-card-meta">${esc(t.meta)}</span>
-        </a>`).join("");
+      $$("svg.cat-art", tiles).forEach((svg) => svg.setAttribute("preserveAspectRatio", "xMidYMin meet"));
     }
-
-    renderFeatured();
-    renderTestimonials();
-  }
-
-  /* Featured collection banner (SHOP_SETTINGS.featuredCollection) */
-  function renderFeatured() {
-    const box = $("[data-featured]");
-    const f = S.featuredCollection;
-    if (!box || !f) return;
-    const set = (sel, v) => { const el = $(sel, box); if (el && v) el.textContent = v; };
-    set("[data-featured-label]", f.label);
-    set("[data-featured-title]", f.title);
-    set("[data-featured-text]", f.text);
-    const link = $("[data-featured-link]", box);
-    if (link && f.link) { link.href = f.link; if (f.cta) link.textContent = f.cta; }
-    const img = $("[data-featured-img]", box);
-    if (img && f.image) {
-      const local = /^images\/.+\.jpe?g$/i.test(f.image);
-      img.dataset.fallback = f.image;
-      img.src = local ? f.image.replace(/\.jpe?g$/i, ".avif") : f.image;
-      if (f.imageAlt) img.alt = f.imageAlt;
-    }
-  }
-
-  /* Testimonials: only real customer quotes from TESTIMONIALS in js/products.js. Hidden while empty. */
-  function renderTestimonials() {
-    const box = $("#testimonials");
-    const list = (Array.isArray(window.TESTIMONIALS) ? window.TESTIMONIALS : []).filter((t) => t && t.quote && t.name);
-    if (!box || !list.length) return;
-    box.innerHTML = list.slice(0, 3).map((t) => `<figure class="testimonial">
-        <blockquote>&ldquo;${esc(t.quote)}&rdquo;</blockquote>
-        <figcaption>${esc(t.name)}${t.detail ? `<span>${esc(t.detail)}</span>` : ""}</figcaption>
-      </figure>`).join("");
-    box.hidden = false;
   }
 
   function renderShop() {
@@ -733,8 +693,7 @@
       const quick = e.target.closest("[data-quick-add]");
       if (quick) {
         const p = findProduct(quick.dataset.quickAdd);
-        if (p && (p.sizes || []).length > 1) openProduct(p.id);
-        else if (p && addToCart(p.id, p.sizes[0])) { toast("Added to your order list"); bumpCartButton(); }
+        if (p && addToCart(p.id, p.sizes[0])) { toast("Added to your order list"); bumpCartButton(); }
       }
     });
     drawer.addEventListener("click", (e) => {
@@ -998,100 +957,9 @@
     $$("[data-sample-notice]").forEach((el) => { el.hidden = !S.showSampleNotice; });
   }
 
-  /* Header: translucent at the top, solid and slightly shorter after 40px (no scroll listener) */
-  function setupHeaderState() {
-    const header = $("[data-header]");
-    const sentinel = $(".scroll-sentinel");
-    if (!header || !sentinel || !("IntersectionObserver" in window)) return;
-    new IntersectionObserver(([en]) => header.classList.toggle("is-scrolled", !en.isIntersecting)).observe(sentinel);
-  }
-
-  /* Hero label: "Cap Syndicate - Iloilo City", plus ", Est. YEAR" once SHOP_SETTINGS.established is set */
-  function setupHeroLabel() {
-    const el = $("[data-hero-label]");
-    if (el) el.textContent = `Cap Syndicate \u2014 Iloilo City${S.established ? `, Est. ${S.established}` : ""}`;
-  }
-
-  /* Full-width search overlay with live suggestions */
-  function setupSearch() {
-    const dlg = $("#search-overlay");
-    if (!dlg) return;
-    const input = $("[data-search-input]", dlg);
-    const out = $("[data-search-results]", dlg);
-    const render = () => {
-      const q = input.value.trim().toLowerCase();
-      if (!q) {
-        out.innerHTML = `<p class="search-hint">Popular: ${activeCats().map((c) => `<a href="products.html?cat=${encodeURIComponent(c.id)}">${esc(c.name)}</a>`).join(" ")}</p>`;
-        return;
-      }
-      const hits = PRODUCTS.filter((p) => `${p.name} ${catName(p.category)} ${p.description}`.toLowerCase().includes(q)).slice(0, 6);
-      out.innerHTML = hits.length
-        ? `<ul class="search-list">${hits.map((p) => `<li><a href="products.html?item=${encodeURIComponent(p.id)}" data-open-product="${esc(p.id)}">
-            <span class="search-thumb">${productMedia(p)}</span>
-            <span class="search-name">${esc(p.name)}<small>${esc(catName(p.category))}</small></span>
-            <span class="search-price">${money(priceNow(p))}</span></a></li>`).join("")}</ul>
-           <a class="link-arrow" href="products.html?q=${encodeURIComponent(input.value.trim())}">See all results ${icon("arrow-right")}</a>`
-        : `<p class="search-hint">No caps match that yet. <a href="${esc(S.messengerUrl || "contact.html")}" target="_blank" rel="noopener noreferrer">Ask us on Messenger</a>, we might have it in the back.</p>`;
-    };
-    input.addEventListener("input", render);
-    $$("[data-open-search]").forEach((a) => a.addEventListener("click", (e) => {
-      e.preventDefault();
-      dlg.showModal();
-      render();
-      input.focus();
-    }));
-    $("[data-close-search]", dlg).addEventListener("click", () => dlg.close());
-    dlg.addEventListener("click", (e) => {
-      if (e.target === dlg) dlg.close();
-      if (e.target.closest("[data-open-product]")) dlg.close();
-    });
-  }
-
-  /* Magnetic primary buttons (desktop pointer only, off for reduced motion) */
-  function setupMagnetic() {
-    if (reducedMotion || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    $$("[data-magnetic]").forEach((btn) => {
-      btn.addEventListener("pointermove", (e) => {
-        const r = btn.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width - 0.5) * 10;
-        const y = ((e.clientY - r.top) / r.height - 0.5) * 8;
-        btn.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-      });
-      btn.addEventListener("pointerleave", () => { btn.style.transform = ""; });
-    });
-  }
-
-  /* Cursor ring (desktop pointer only). The system cursor stays visible; the ring follows it
-     and grows over links and buttons. Off for touch screens and reduced motion. */
-  function setupCursor() {
-    if (reducedMotion || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    const ring = document.createElement("div");
-    ring.className = "cursor-ring";
-    ring.setAttribute("aria-hidden", "true");
-    document.body.append(ring);
-    let x = -100, y = -100, rx = x, ry = y, raf = 0;
-    const loop = () => {
-      rx += (x - rx) * 0.22;
-      ry += (y - ry) * 0.22;
-      ring.style.transform = `translate(${rx.toFixed(1)}px, ${ry.toFixed(1)}px)`;
-      raf = Math.abs(x - rx) + Math.abs(y - ry) > 0.3 ? requestAnimationFrame(loop) : 0;
-    };
-    document.addEventListener("pointermove", (e) => {
-      x = e.clientX; y = e.clientY;
-      ring.classList.add("is-on");
-      ring.classList.toggle("is-hover", !!e.target.closest("a, button, [role=button], input, select, textarea, label"));
-      if (!raf) raf = requestAnimationFrame(loop);
-    }, { passive: true });
-    document.addEventListener("pointerleave", () => ring.classList.remove("is-on"));
-  }
-
   /* ---------- 14. Boot ---------- */
   function boot() {
-    setupImageFallback();
     bindSettings();
-    setupHeroLabel();
-    setupHeaderState();
-    setupSearch();
     setupSampleNotice();
     renderHome();
     renderDeals();
@@ -1106,8 +974,6 @@
     setupContact();
     setupConsent();
     setupReveal();
-    setupMagnetic();
-    setupCursor();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

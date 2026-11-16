@@ -14,7 +14,6 @@
 window.SHOP_SETTINGS = {
   shopName: "Cap Syndicate",
   tagline: "Built for the Streets",
-  established: "",                    // [EDIT] e.g. "2025". Shows as "Cap Syndicate - Iloilo City, Est. 2025" on the home hero.
 
   // Contact details (from the shop's Instagram). These fill every [data-setting="..."] spot on the site.
   address: "25 Gen. Luna Ave, Iloilo City Proper, Iloilo City (beside Celestial Creations)",
@@ -37,24 +36,11 @@ window.SHOP_SETTINGS = {
   formEndpoint: "",
 
   // Rotating bar under the header. Add, remove or reword messages freely. href is optional.
-  // Scrolling offers bar under the header. One clear offer per item. href is optional.
   announcements: [
-    { text: "Buy 1 Get 1 on selected caps", href: "deals.html" },
-    { text: "40% off select pieces", href: "deals.html" },
-    { text: "Cap care from ₱150", href: "products.html#services-title" },
-    { text: "Open daily at 25 Gen. Luna Ave, Iloilo City", href: "contact.html" }
+    { text: "Buy 1 Get 1 and 40% off on selected pieces", href: "deals.html" },
+    { text: "Cap care: reblock ₱150, deep clean ₱400", href: "products.html#services-title" },
+    { text: "Visit us: 25 Gen. Luna Ave, Iloilo City", href: "contact.html" }
   ],
-
-  // Featured collection banner on the home page. link can be any shop URL, e.g. "products.html?q=rope".
-  featuredCollection: {
-    label: "Featured collection",
-    title: "The Rope Cap Edit",
-    text: "A rope across the brim, a '47 Brand build and team colors that pop. Four picks from the wall: Commanders, Nebraska, Braves and Gators.",
-    image: "images/products/47-nebraska-hitch-rope.jpg",
-    imageAlt: "'47 Brand Hitch Nebraska Cornhuskers rope cap",
-    link: "products.html?q=rope",
-    cta: "Shop the edit"
-  },
 
   // Shows a yellow "sample catalog" notice on the shop page. Turn on while the catalog is being updated.
   showSampleNotice: false,
@@ -208,11 +194,3 @@ window.PRODUCTS = [
     description: "White crown, royal blue brim and white rope. Gators Florida in an orange-to-blue fade over the gator head."
   }
 ];
-
-/* ---------- 5. TESTIMONIALS ---------- */
-/*
-  Real customer quotes only, with their permission. Up to 3 show on the home page.
-  The block stays hidden while this list is empty. Example:
-  { quote: "Got my size in one try. The deep clean brought my old fitted back.", name: "First name L.", detail: "Jaro, Iloilo City" }
-*/
-window.TESTIMONIALS = [];
