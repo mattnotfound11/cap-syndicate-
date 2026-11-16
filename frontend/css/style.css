@@ -1660,3 +1660,30 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
   .hero-cover { aspect-ratio: auto; height: clamp(360px, calc(100dvh - 180px), 980px); }
   .hero-cover-img { object-position: 50% 42%; }
 }
+
+/* ==========================================================================
+   31. COVER HERO, crew-first
+   Quote sits at the bottom-center over the floor, not over faces.
+   One-line headline, shade only along the bottom edge.
+   On landscape screens the crop keeps every head and cap in frame.
+   ========================================================================== */
+.hero-cover { place-items: end center; }
+.hero-cover::before {
+  background: linear-gradient(180deg, rgba(8, 8, 8, 0.1) 0%, transparent 18%, transparent 58%, rgba(8, 8, 8, 0.55) 78%, rgba(8, 8, 8, 0.92) 100%);
+}
+.hero-cover-copy { gap: 10px; padding: 0 var(--gutter) clamp(18px, 4vh, 44px); max-width: none; }
+.hero--cover h1 { font-size: clamp(1.7rem, 8vw, 6rem); white-space: nowrap; letter-spacing: 0.04em; line-height: 1; }
+.hero--cover h1 .text-gradient { padding-bottom: 0; }
+@media (max-width: 767px) {
+  .hero--cover h1 { font-size: clamp(1.6rem, 8.6vw, 2.6rem); }
+  .hero-cover-copy { gap: 8px; padding-bottom: 14px; }
+  .hero--cover .hero-ctas { margin-top: 4px; }
+  .hero--cover .hero-ctas .btn { min-height: 38px; }
+}
+@media (orientation: landscape) {
+  /* show from just above the tallest cap down to the knees, so the quote lands below every face */
+  .hero-cover-img { object-position: 50% 54%; }
+  .hero--cover h1 { font-size: clamp(2.4rem, 5.4vw, 5.2rem); }
+}
+/* The older hero rule stacks each headline span on its own line; keep this one on a single line */
+.hero--cover h1 span { display: inline; }
