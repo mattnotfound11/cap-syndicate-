@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="js/products.js" defer></script>
   <script src="js/main.js" defer></script>
-  <link rel="preload" as="image" href="images/hero-crew-photo.jpg">
+  <link rel="preload" as="image" href="images/logo-wordmark-lg.png">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"ClothingStore","name":"Cap Syndicate","slogan":"Built for the Streets","url":"https://capsyndicate.com/","logo":"https://capsyndicate.com/images/logo.png","image":"https://capsyndicate.com/images/og-image.jpg","address":{"@type":"PostalAddress","addressLocality":"Iloilo City","addressCountry":"PH"},"sameAs":["https://www.facebook.com/profile.php?id=61573261537346","https://www.instagram.com/cap_syndicate/"]}</script>
 </head>
 <body data-page="home">
@@ -82,17 +82,16 @@
   </dialog>
   <main id="main">
 
-    <!-- HERO: full-bleed crew photo with the quote centered. Replace images/hero-crew-photo.jpg to change the photo. -->
-    <section class="hero hero--cover" aria-labelledby="hero-title">
-      <div class="hero-cover">
-        <img class="hero-cover-img" src="images/hero-crew-photo.jpg" alt="The Cap Syndicate crew in caps and streetwear, standing in front of the cap wall inside the shop" width="1196" height="1315" fetchpriority="high" decoding="async">
-        <div class="hero-cover-copy">
-          <p class="eyebrow">Cap Syndicate, Iloilo City</p>
-          <h1 id="hero-title">Built for <span class="text-gradient">the streets</span></h1>
-          <div class="hero-ctas">
-            <a class="btn btn--primary" href="products.html">Shop Caps</a>
-            <a class="btn btn--ghost" href="deals.html">This Week's Deals</a>
-          </div>
+    <!-- HERO: full-width, centered logo -->
+    <section class="hero hero--full" aria-labelledby="hero-title">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-center">
+        <img class="hero-logo" src="images/logo-wordmark-lg.png" alt="Cap Syndicate" width="720" height="405" fetchpriority="high">
+        <h1 id="hero-title">Built for the <span class="text-gradient">streets</span></h1>
+        <p class="lead">Caps and streetwear for the ones who run the block.</p>
+        <div class="hero-ctas">
+          <a class="btn btn--primary" href="products.html">Shop Caps</a>
+          <a class="btn btn--ghost" href="deals.html">This Week's Deals</a>
         </div>
       </div>
       <nav class="hero-links" aria-label="Shop by category">
@@ -196,6 +195,21 @@
         </header>
         <div class="cat-grid reveal-stagger" id="category-tiles"></div>
         <noscript><p class="center"><a href="products.html">Browse all products</a></p></noscript>
+      </div>
+    </section>
+
+    <!-- THE CREW: photo of the Cap Syndicate crew in the shop. Replace images/hero-crew-photo.jpg to change it. -->
+    <section class="crew-feature" aria-labelledby="crew-feature-title">
+      <div class="crew-feature-grid">
+        <div class="crew-feature-media reveal">
+          <img src="images/hero-crew-photo.jpg" alt="The Cap Syndicate crew in caps and streetwear, standing in front of the cap wall inside the shop" width="1196" height="1315" loading="lazy" decoding="async">
+        </div>
+        <div class="crew-feature-copy reveal">
+          <p class="eyebrow">The Syndicate</p>
+          <h2 id="crew-feature-title">A crew, not a <span class="text-gradient">corporation</span></h2>
+          <p class="muted">The people behind the wall on Gen. Luna Ave. Come through, try a few on and find the one that's yours.</p>
+          <a class="btn btn--ghost" href="about.html">Meet the crew</a>
+        </div>
       </div>
     </section>
 

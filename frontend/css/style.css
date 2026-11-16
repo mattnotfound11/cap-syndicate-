@@ -1552,138 +1552,16 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
 @media (min-width: 1024px) { .trust-grid { grid-template-columns: repeat(4, 1fr); gap: 32px; padding-block: 88px; } }
 
 /* ==========================================================================
-   29. PHOTO HERO (home)
-   Phone: photo on top at its natural shape, copy below.
-   Tablet + desktop: copy left, photo right, both filling one screen height,
-   category links across the bottom. No empty bands at any width.
+   29. CREW SECTION (home): the crew photo beside a short line about the shop.
+   Same frame and hairline as the Cap of the Week / deal banners.
    ========================================================================== */
-.hero--photo {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "photo" "copy" "links";
-  padding: 0;
-  overflow: hidden;
-  background: radial-gradient(70% 60% at 0% 100%, rgba(179, 18, 27, 0.22), transparent 70%), #080808;
-}
-.hero-photo { grid-area: photo; position: relative; aspect-ratio: 1196 / 1315; max-height: 72dvh; overflow: hidden; background: #141414; }
-.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; }
-.hero-photo::after { content: ""; position: absolute; inset: auto 0 0; height: 30%; background: linear-gradient(180deg, transparent, #080808); pointer-events: none; }
-.hero-copy { grid-area: copy; position: relative; display: grid; align-content: center; justify-items: start; gap: 16px; padding: 4px var(--gutter) 44px; margin-top: -40px; }
-.hero--photo h1 { font-size: clamp(3rem, 14vw, 4.6rem); line-height: 0.95; letter-spacing: 0.04em; }
-.hero--photo .lead { margin: 0; max-width: 34ch; }
-.hero--photo .hero-ctas { margin-top: 10px; width: 100%; }
-.hero--photo .hero-ctas .btn { flex: 1 1 160px; }
-.hero--photo .hero-links { grid-area: links; }
-.hero--photo .hero-links ul { justify-content: flex-start; }
-
-/* Side by side on laptops/desktops and landscape tablets */
-@media (min-width: 1200px), (min-width: 768px) and (orientation: landscape) {
-  .hero--photo {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-areas: "copy photo" "links links";
-    grid-template-rows: minmax(0, 1fr) auto;
-    height: clamp(560px, calc(100dvh - 120px), 1000px);
-  }
-  .hero-photo { aspect-ratio: auto; max-height: none; height: 100%; }
-  .hero-photo::after { inset: 0 auto 0 0; width: 8%; height: auto; background: linear-gradient(90deg, #080808, transparent); }
-  .hero-copy {
-    margin: 0;
-    padding-block: 40px;
-    padding-right: 40px;
-    /* line the text up with the page container on wide screens */
-    padding-left: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
-  }
-  .hero--photo h1 { font-size: clamp(3.4rem, 7.4vw, 6.6rem); }
-  .hero--photo .hero-ctas { width: auto; }
-  .hero--photo .hero-ctas .btn { flex: 0 0 auto; }
-  .hero--photo .hero-links ul { justify-content: center; }
-}
-@media (min-width: 1024px) { .hero-copy { padding-right: 64px; gap: 20px; } }
-
-/* Phones: shorter photo and buttons side by side, so photo, headline and both CTAs fit one screen */
-@media (max-width: 767px) {
-  .hero-photo { max-height: 46dvh; width: 100%; }
-  .hero-copy { gap: 12px; padding-bottom: 28px; }
-  .hero--photo h1 { font-size: clamp(2.6rem, 12.5vw, 4rem); }
-  .hero--photo .lead { font-size: 0.95rem; }
-  .hero--photo .hero-ctas { gap: 10px; margin-top: 6px; }
-  .hero--photo .hero-ctas .btn { flex: 1 1 140px; padding-inline: 12px; font-size: 0.68rem; letter-spacing: 0.14em; }
-}
-@media (max-width: 767px) and (max-height: 700px) { .hero-photo { max-height: 38dvh; } .hero-copy { margin-top: -28px; } }
-
-/* Portrait tablets: stacked, wide photo on top, centered copy, everything inside one screen */
-@media (min-width: 768px) and (max-width: 1199px) and (orientation: portrait) {
-  .hero-photo { max-height: 52dvh; width: 100%; }
-  .hero-copy { justify-items: center; text-align: center; padding: 0 48px 40px; margin-top: -48px; gap: 16px; }
-  .hero--photo h1 { font-size: clamp(3.6rem, 9vw, 5.4rem); }
-  .hero--photo .lead { margin-inline: auto; }
-  .hero--photo .hero-ctas { justify-content: center; width: auto; }
-  .hero--photo .hero-ctas .btn { flex: 0 0 auto; }
-  .hero--photo .hero-links ul { justify-content: center; }
-}
-
-/* ==========================================================================
-   30. COVER HERO (home): crew photo full-bleed, quote centered on top.
-   Portrait screens: the frame takes the photo's own shape (1196 x 1315),
-   so the whole crew shows with no crop and no empty bands.
-   Landscape screens: the photo fills one screen height, edge to edge.
-   ========================================================================== */
-.hero--cover { display: grid; grid-template-columns: minmax(0, 1fr); padding: 0; overflow: hidden; background: #080808; }
-.hero-cover { position: relative; display: grid; place-items: center; aspect-ratio: 1196 / 1315; overflow: hidden; isolation: isolate; }
-.hero-cover-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
-/* shade so white text reads on a busy photo: darker in the middle band and at the bottom edge */
-.hero-cover::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(70% 45% at 50% 52%, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2) 70%, transparent 100%),
-    linear-gradient(180deg, rgba(8, 8, 8, 0.15) 0%, rgba(8, 8, 8, 0.25) 60%, rgba(8, 8, 8, 0.85) 100%);
-}
-.hero-cover-copy { display: grid; justify-items: center; gap: 14px; text-align: center; padding: 24px var(--gutter); max-width: 900px; }
-.hero--cover .eyebrow { color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8); }
-.hero--cover h1 { font-size: clamp(2.5rem, 11vw, 7.2rem); line-height: 0.95; letter-spacing: 0.05em; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6); }
-.hero--cover .text-gradient { text-shadow: none; filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.55)); }
-.hero--cover .hero-ctas { justify-content: center; gap: 10px; margin-top: 8px; }
-.hero--cover .hero-ctas .btn { flex: 0 0 auto; }
-.hero--cover .btn--ghost { background: rgba(0, 0, 0, 0.35); border-color: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.hero--cover .btn--ghost:hover { background: var(--white); }
-
-/* Phones: smaller type and compact buttons so the quote and both CTAs sit inside the photo */
-@media (max-width: 767px) {
-  .hero-cover-copy { gap: 10px; }
-  .hero--cover .eyebrow { font-size: 0.6rem; letter-spacing: 0.28em; }
-  .hero--cover h1 { font-size: clamp(2.2rem, 11vw, 3.4rem); }
-  .hero--cover .hero-ctas .btn { min-height: 42px; padding-inline: 14px; font-size: 0.64rem; letter-spacing: 0.14em; }
-}
-
-/* Landscape screens: fill one screen height (minus header, announcement bar and category links) */
-@media (orientation: landscape) {
-  .hero-cover { aspect-ratio: auto; height: clamp(360px, calc(100dvh - 180px), 980px); }
-  .hero-cover-img { object-position: 50% 42%; }
-}
-
-/* ==========================================================================
-   31. COVER HERO, crew-first
-   Quote sits at the bottom-center over the floor, not over faces.
-   One-line headline, shade only along the bottom edge.
-   On landscape screens the crop keeps every head and cap in frame.
-   ========================================================================== */
-.hero-cover { place-items: end center; }
-.hero-cover::before {
-  background: linear-gradient(180deg, rgba(8, 8, 8, 0.1) 0%, transparent 18%, transparent 58%, rgba(8, 8, 8, 0.55) 78%, rgba(8, 8, 8, 0.92) 100%);
-}
-.hero-cover-copy { gap: 10px; padding: 0 var(--gutter) clamp(18px, 4vh, 44px); max-width: none; }
-.hero--cover h1 { font-size: clamp(1.7rem, 8vw, 6rem); white-space: nowrap; letter-spacing: 0.04em; line-height: 1; }
-.hero--cover h1 .text-gradient { padding-bottom: 0; }
-@media (max-width: 767px) {
-  .hero--cover h1 { font-size: clamp(1.6rem, 8.6vw, 2.6rem); }
-  .hero-cover-copy { gap: 8px; padding-bottom: 14px; }
-  .hero--cover .hero-ctas { margin-top: 4px; }
-  .hero--cover .hero-ctas .btn { min-height: 38px; }
-}
-@media (orientation: landscape) {
-  /* show from just above the tallest cap down to the knees, so the quote lands below every face */
-  .hero-cover-img { object-position: 50% 54%; }
-  .hero--cover h1 { font-size: clamp(2.4rem, 5.4vw, 5.2rem); }
-}
-/* The older hero rule stacks each headline span on its own line; keep this one on a single line */
-.hero--cover h1 span { display: inline; }
+.crew-feature { padding: 16px; }
+@media (min-width: 1024px) { .crew-feature { padding: 20px; } }
+.crew-feature-grid { display: grid; max-width: 1600px; margin-inline: auto; border: 1px solid var(--line); background: #0e0e0e; }
+.crew-feature-media { position: relative; aspect-ratio: 1196 / 1315; overflow: hidden; background: #141414; }
+.crew-feature-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.crew-feature-copy { display: grid; align-content: center; justify-items: start; gap: 16px; padding: 36px 28px; }
+.crew-feature-copy h2 { font-size: clamp(2rem, 5vw, 3.2rem); letter-spacing: 0.08em; }
+.crew-feature-copy p { max-width: 42ch; }
+@media (min-width: 768px) { .crew-feature-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .crew-feature-copy { padding: 56px 64px; } }
