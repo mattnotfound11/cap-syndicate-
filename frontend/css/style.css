@@ -1621,3 +1621,42 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
   .hero--photo .hero-ctas .btn { flex: 0 0 auto; }
   .hero--photo .hero-links ul { justify-content: center; }
 }
+
+/* ==========================================================================
+   30. COVER HERO (home): crew photo full-bleed, quote centered on top.
+   Portrait screens: the frame takes the photo's own shape (1196 x 1315),
+   so the whole crew shows with no crop and no empty bands.
+   Landscape screens: the photo fills one screen height, edge to edge.
+   ========================================================================== */
+.hero--cover { display: grid; grid-template-columns: minmax(0, 1fr); padding: 0; overflow: hidden; background: #080808; }
+.hero-cover { position: relative; display: grid; place-items: center; aspect-ratio: 1196 / 1315; overflow: hidden; isolation: isolate; }
+.hero-cover-img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+/* shade so white text reads on a busy photo: darker in the middle band and at the bottom edge */
+.hero-cover::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    radial-gradient(70% 45% at 50% 52%, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.2) 70%, transparent 100%),
+    linear-gradient(180deg, rgba(8, 8, 8, 0.15) 0%, rgba(8, 8, 8, 0.25) 60%, rgba(8, 8, 8, 0.85) 100%);
+}
+.hero-cover-copy { display: grid; justify-items: center; gap: 14px; text-align: center; padding: 24px var(--gutter); max-width: 900px; }
+.hero--cover .eyebrow { color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8); }
+.hero--cover h1 { font-size: clamp(2.5rem, 11vw, 7.2rem); line-height: 0.95; letter-spacing: 0.05em; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.6); }
+.hero--cover .text-gradient { text-shadow: none; filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.55)); }
+.hero--cover .hero-ctas { justify-content: center; gap: 10px; margin-top: 8px; }
+.hero--cover .hero-ctas .btn { flex: 0 0 auto; }
+.hero--cover .btn--ghost { background: rgba(0, 0, 0, 0.35); border-color: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.hero--cover .btn--ghost:hover { background: var(--white); }
+
+/* Phones: smaller type and compact buttons so the quote and both CTAs sit inside the photo */
+@media (max-width: 767px) {
+  .hero-cover-copy { gap: 10px; }
+  .hero--cover .eyebrow { font-size: 0.6rem; letter-spacing: 0.28em; }
+  .hero--cover h1 { font-size: clamp(2.2rem, 11vw, 3.4rem); }
+  .hero--cover .hero-ctas .btn { min-height: 42px; padding-inline: 14px; font-size: 0.64rem; letter-spacing: 0.14em; }
+}
+
+/* Landscape screens: fill one screen height (minus header, announcement bar and category links) */
+@media (orientation: landscape) {
+  .hero-cover { aspect-ratio: auto; height: clamp(360px, calc(100dvh - 180px), 980px); }
+  .hero-cover-img { object-position: 50% 42%; }
+}
