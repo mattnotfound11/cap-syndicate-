@@ -15,10 +15,10 @@ window.SHOP_SETTINGS = {
   shopName: "Cap Syndicate",
   tagline: "Built for the Streets",
 
-  // Contact details. These fill every [data-setting="..."] spot on the site.
-  address: "[ADD ADDRESS HERE], Iloilo City, Philippines",
-  hours: "[ADD STORE HOURS HERE]",
-  phone: "[ADD PHONE NUMBER HERE]",
+  // Contact details (from the shop's Instagram). These fill every [data-setting="..."] spot on the site.
+  address: "25 Gen. Luna Ave, Iloilo City Proper, Iloilo City (beside Celestial Creations)",
+  hours: "Open daily, 11:30 AM to 8:00 PM [EDIT: confirm, Instagram posts list different hours]",
+  phone: "0916 574 2695",
   email: "[ADD EMAIL HERE]",          // e.g. "capsyndicate.ph@gmail.com". Order emails go here.
 
   // Social links
@@ -28,8 +28,8 @@ window.SHOP_SETTINGS = {
   instagramUrl: "https://www.instagram.com/cap_syndicate/",
   instagramDmUrl: "https://ig.me/m/cap_syndicate",
 
-  // Google Maps search used by the map embeds. Put your exact address here once the store opens.
-  mapQuery: "Iloilo City, Philippines",
+  // Google Maps search used by the map embeds
+  mapQuery: "25 Gen. Luna Ave, Iloilo City Proper, Iloilo City",
 
   // Optional: paste a Formspree / Getform endpoint to receive contact + sign-up forms by email.
   // Leave "" and the forms open the visitor's email app instead (nothing is lost).
@@ -37,13 +37,13 @@ window.SHOP_SETTINGS = {
 
   // Rotating bar under the header. Add, remove or reword messages freely. href is optional.
   announcements: [
-    { text: "Use code SYNDICATE10 for 10% off all caps", href: "deals.html" },
-    { text: "New drops every week. Turn on drop alerts", href: "deals.html#signup-title" },
-    { text: "Free pickup in store. Ships nationwide", href: "contact.html#faq" }
+    { text: "Buy 1 Get 1 and 40% off on selected pieces", href: "deals.html" },
+    { text: "Cap care: reblock ₱150, deep clean ₱400", href: "products.html#services-title" },
+    { text: "Visit us: 25 Gen. Luna Ave, Iloilo City", href: "contact.html" }
   ],
 
-  // Shows a yellow "sample catalog" notice on the shop page. Set to false once real photos/prices are in.
-  showSampleNotice: true,
+  // Shows a yellow "sample catalog" notice on the shop page. Turn on while the catalog is being updated.
+  showSampleNotice: false,
 
   // Only set to true if you add analytics/tracking. It turns on the cookie consent banner.
   usesTracking: false,
@@ -51,22 +51,23 @@ window.SHOP_SETTINGS = {
   // Cap of the Week: pick a product id from the PRODUCTS list below
   capOfTheWeek: {
     productId: "cs-001",
-    story: "[EDIT] Our go-to all-black snapback with the red stitch. Flat brim, stiff front, sits right on the first try. It's the one the crew grabs on the way out the door."
+    story: "Black '47 snapback with the Detroit Tigers script in orange and the Old English D on the side. Clean, classic, goes with everything."
   },
 
   // This week's main deal. Leave endsAt "" to auto-end every Sunday 11:59 PM (Philippine time).
+  // Leave code "" if the promo needs no code: the promo-code boxes hide themselves.
   weeklyDeal: {
-    title: "10% off all caps",
-    description: "Use the code when you message your order. Valid on every cap in the shop this week.",
-    code: "SYNDICATE10",               // [EDIT] change every week
+    title: "Buy 1 Get 1 + 40% off",
+    description: "Daily promos on selected pieces from New Era, '47 Brand, Carhartt, Stussy and more. Limited time. Ask in store or DM us which pieces are included.",
+    code: "",
     endsAt: ""
   },
 
   // Next drop. Leave date "" to auto-count down to next Friday 8:00 PM (Philippine time).
   nextDrop: {
-    name: "[EDIT] Drop 04: Late Night Pack",
+    name: "[EDIT] Next drop name",
     date: "",
-    description: "Three new colorways. Limited pieces each. Turn on drop alerts so you don't miss it."
+    description: "New caps land in store and on Instagram. Turn on drop alerts so you don't miss it."
   }
 };
 
@@ -74,9 +75,9 @@ window.SHOP_SETTINGS = {
 window.DEALS = {
   // Cards on the Weekly Deals page. style: "hot" makes one card red.
   thisWeek: [
-    { style: "hot", icon: "tag",  big: "10% off", title: "All caps this week", text: "Message your order with the promo code. Discount applies to every cap in stock." },
-    { style: "",    icon: "gift", big: "Free",    title: "Sticker pack with any cap", text: "Every cap order this week comes with a Cap Syndicate sticker pack. While supplies last." },
-    { style: "",    icon: "users", big: "2 for ₱1,300", title: "Barkada bundle", text: "[EDIT] Any two dad caps for ₱1,300. Mix colors. Bring the crew." }
+    { style: "hot", icon: "gift", big: "Buy 1 Get 1", title: "On selected pieces", text: "Double your rotation for less. Ask in store or DM us which caps are included." },
+    { style: "",    icon: "tag",  big: "40% off", title: "Big names, smaller prices", text: "Selected pieces from New Era, '47 Brand, Carhartt, Stussy, Chrome Hearts, Essentials and more." },
+    { style: "",    icon: "users", big: "From ₱150", title: "Cap care services", text: "Reblock ₱150, deep clean ₱400, repaint from ₱450, customization ₱350 to ₱950." }
   ],
 
   // Past deals (shown with an ENDED stamp)
@@ -99,15 +100,16 @@ window.DEALS = {
 };
 
 /* ---------- 3. CATEGORIES ---------- */
-// id is used in links like products.html?cat=snapback. art picks the placeholder drawing.
+// id is used in links like products.html?cat=mlb. Categories with no products are hidden automatically,
+// so you can add types like { id: "fitted", name: "Fitted", art: "fitted" } before stocking them.
+// art picks the placeholder drawing used when a product has no photo
+// (snapback, fitted, dad, bucket, tee, hoodie, accessory).
 window.CATEGORIES = [
-  { id: "snapback",  name: "Snapbacks",   art: "snapback" },
-  { id: "fitted",    name: "Fitted",      art: "fitted" },
-  { id: "dad-cap",   name: "Dad Caps",    art: "dad" },
-  { id: "bucket",    name: "Bucket Hats", art: "bucket" },
-  { id: "shirt",     name: "Shirts",      art: "tee" },
-  { id: "hoodie",    name: "Hoodies",     art: "hoodie" },
-  { id: "accessory", name: "Accessories", art: "accessory" }
+  { id: "mlb",       name: "MLB",       art: "snapback" },
+  { id: "nfl",       name: "NFL",       art: "snapback" },
+  { id: "college",   name: "College",   art: "snapback" },
+  { id: "nhl",       name: "NHL",       art: "snapback" },
+  { id: "lifestyle", name: "Lifestyle", art: "dad" }
 ];
 
 /* ---------- 4. PRODUCTS ---------- */
@@ -122,120 +124,73 @@ window.CATEGORIES = [
   stock     "in" | "low" | "out"
   isNew     true shows a NEW badge
   added     date added (YYYY-MM-DD). Used for "Newest" sort and New Arrivals.
-  images    list of photo paths, e.g. ["images/products/block-captain-1.jpg", "images/products/block-captain-2.jpg"]
+  images    list of photo paths, e.g. ["images/products/cap-front.jpg", "images/products/cap-side.jpg"]
             Leave [] to show a drawn placeholder in the product colors.
   color / accent   placeholder drawing colors (only used when images is empty)
   description      2-3 short lines
 
-  SAMPLE DATA: names, prices and stock below are examples. Replace with the real catalog.
+  The caps below come from the shop's Instagram posts (September 15, 2026).
+  [EDIT] Update stock as pieces sell.
 */
 window.PRODUCTS = [
   {
-    id: "cs-001", name: "Block Captain Snapback", category: "snapback",
-    price: 750, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: true, added: "2026-11-14",
-    images: [], color: "#151515", accent: "#B3121B",
-    description: "All-black six-panel snapback with a red embroidered CS on the front. Flat brim, structured crown, plastic snap closure."
+    id: "cs-001", name: "'47 Brand Detroit Tigers Cap", category: "mlb",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-detroit-tigers.jpg"], color: "#151515", accent: "#F26722",
+    description: "Black snapback with the Detroit Tigers script in orange and the Old English D on the side panel."
   },
   {
-    id: "cs-002", name: "Red Light Snapback", category: "snapback",
-    price: 780, salePrice: null, sizes: ["One size / adjustable"], stock: "low", isNew: true, added: "2026-11-12",
-    images: [], color: "#B3121B", accent: "#FFFFFF",
-    description: "Street Red crown with white stitching. Loud on purpose. Flat brim, green under-visor, snap closure."
+    id: "cs-002", name: "'47 Brand Houston Astros Cap", category: "mlb",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-houston-astros.jpg"], color: "#EFE9DC", accent: "#1F2A44",
+    description: "Cream crown with a navy brim. ASTROS arched over the Texas star logo and a Baseball banner."
   },
   {
-    id: "cs-003", name: "Concrete Snapback", category: "snapback",
-    price: 720, salePrice: 650, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-10-20",
-    images: [], color: "#6E6E6E", accent: "#111111",
-    description: "Concrete gray wool-blend snapback with a black tonal logo. Goes with every fit you own."
+    id: "cs-003", name: "'47 Brand Atlanta Falcons Cap", category: "nfl",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-atlanta-falcons.jpg"], color: "#151515", accent: "#D8CFA8",
+    description: "Black snapback with ATLANTA FALCONS arched in cream over the falcon logo."
   },
   {
-    id: "cs-004", name: "Syndicate Script Fitted", category: "fitted",
-    price: 1150, salePrice: null, sizes: ["7", "7 1/8", "7 1/4", "7 3/8", "7 1/2", "7 5/8"], stock: "in", isNew: true, added: "2026-11-10",
-    images: [], color: "#121212", accent: "#E8737A",
-    description: "Fitted cap with the Syndicate script across the front in a red-to-white fade. Closed back, high crown. Check the size guide before you order."
+    id: "cs-004", name: "'47 Brand Washington Commanders Rope Cap", category: "nfl",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-washington-commanders-rope.jpg"], color: "#7A735C", accent: "#F2E3A6",
+    description: "Olive crown with a cream rope across the front. Washington Commanders, Est. 1932, around the W logo."
   },
   {
-    id: "cs-005", name: "Night Shift Fitted", category: "fitted",
-    price: 1100, salePrice: null, sizes: ["7", "7 1/8", "7 1/4", "7 3/8", "7 1/2"], stock: "low", isNew: false, added: "2026-10-28",
-    images: [], color: "#1E2A44", accent: "#FFFFFF",
-    description: "Midnight navy fitted with a small white CS hit. Clean enough for school, sharp enough for the weekend."
+    id: "cs-005", name: "'47 Brand Las Vegas Raiders Cap", category: "nfl",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-las-vegas-raiders.jpg"], color: "#151515", accent: "#E5E5E5",
+    description: "All-black structured cap with the Raiders shield in white and silver. Curved brim."
   },
   {
-    id: "cs-006", name: "Crimson Fitted", category: "fitted",
-    price: 1200, salePrice: null, sizes: ["7 1/8", "7 1/4", "7 3/8"], stock: "out", isNew: false, added: "2026-10-05",
-    images: [], color: "#7A0C12", accent: "#FFFFFF",
-    description: "Deep Red fitted, the first one we ever dropped. Sold out for now. Message us to get on the restock list."
+    id: "cs-006", name: "'47 Brand Vegas Golden Knights Corduroy Cap", category: "nhl",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-vegas-golden-knights-corduroy.jpg"], color: "#E3D19A", accent: "#3A3A3A",
+    description: "Gold corduroy crown with a gray corduroy brim. Vegas Golden Knights shield between laurels, 20 17."
   },
   {
-    id: "cs-007", name: "Late Night Dad Cap", category: "dad-cap",
-    price: 590, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: true, added: "2026-11-08",
-    images: [], color: "#1A1A1A", accent: "#FFFFFF",
-    description: "Soft unstructured cotton dad cap in black. Curved brim, metal buckle strap. Gets better the more you wear it."
+    id: "cs-007", name: "'47 Brand Hitch Nebraska Cornhuskers Rope Cap", category: "college",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-nebraska-hitch-rope.jpg"], color: "#EFE6CF", accent: "#D00000",
+    description: "Cream crown, red brim and red rope. Cornhuskers Nebraska with the N over a green field graphic."
   },
   {
-    id: "cs-008", name: "Washed Red Dad Cap", category: "dad-cap",
-    price: 620, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-10-22",
-    images: [], color: "#8C1D24", accent: "#F2F2F2",
-    description: "Garment-washed red dad cap with a faded, broken-in look from day one. Buckle strap."
+    id: "cs-008", name: "'47 Brand Corduroy Cap \"St. Paul\"", category: "lifestyle",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-st-paul-corduroy.jpg"], color: "#6B7488", accent: "#EFE6CF",
+    description: "Washed blue-gray corduroy with ST. PAUL stitched in cream. Soft, worn-in look."
   },
   {
-    id: "cs-009", name: "Sand Dad Cap", category: "dad-cap",
-    price: 590, salePrice: null, sizes: ["One size / adjustable"], stock: "low", isNew: false, added: "2026-10-15",
-    images: [], color: "#C8B89A", accent: "#111111",
-    description: "Light sand dad cap with a black CS. The easy pick for hot days and light-colored fits."
+    id: "cs-009", name: "'47 Brand Atlanta Braves Rope Cap", category: "mlb",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-atlanta-braves-rope.jpg"], color: "#1C2333", accent: "#EFE6CF",
+    description: "Navy crown with a cream rope. BRAVES arched over a stars-and-stripes A."
   },
   {
-    id: "cs-010", name: "Rain Check Bucket Hat", category: "bucket",
-    price: 690, salePrice: null, sizes: ["S/M", "L/XL"], stock: "in", isNew: true, added: "2026-11-05",
-    images: [], color: "#161616", accent: "#B3121B",
-    description: "Black nylon bucket hat that shrugs off light rain. Red woven tab on the side. Packs flat."
-  },
-  {
-    id: "cs-011", name: "Reversible Bucket Hat", category: "bucket",
-    price: 790, salePrice: null, sizes: ["S/M", "L/XL"], stock: "out", isNew: false, added: "2026-09-30",
-    images: [], color: "#B3121B", accent: "#111111",
-    description: "Red on one side, black on the other. Two hats, one price. Sold out, restock coming."
-  },
-  {
-    id: "cs-012", name: "Crew Logo Tee - Black", category: "shirt",
-    price: 599, salePrice: null, sizes: ["S", "M", "L", "XL", "2XL"], stock: "in", isNew: false, added: "2026-10-18",
-    images: [], color: "#151515", accent: "#B3121B",
-    description: "Heavyweight cotton tee with the Cap Syndicate script on the chest. Boxy fit, drops at the shoulder."
-  },
-  {
-    id: "cs-013", name: "Built for the Streets Tee - White", category: "shirt",
-    price: 599, salePrice: 499, sizes: ["S", "M", "L", "XL"], stock: "low", isNew: false, added: "2026-10-12",
-    images: [], color: "#EDEDED", accent: "#B3121B",
-    description: "White tee with BUILT FOR THE STREETS across the back. Boxy fit, heavyweight cotton."
-  },
-  {
-    id: "cs-014", name: "Syndicate Heavyweight Hoodie", category: "hoodie",
-    price: 1650, salePrice: null, sizes: ["S", "M", "L", "XL"], stock: "in", isNew: true, added: "2026-11-02",
-    images: [], color: "#141414", accent: "#E8737A",
-    description: "Thick fleece pullover hoodie with a gradient Syndicate print. Double-layer hood, kangaroo pocket."
-  },
-  {
-    id: "cs-015", name: "Block Zip Hoodie - Gray", category: "hoodie",
-    price: 1790, salePrice: null, sizes: ["M", "L", "XL"], stock: "low", isNew: false, added: "2026-10-08",
-    images: [], color: "#5E5E5E", accent: "#FFFFFF",
-    description: "Concrete gray full-zip hoodie with a small chest logo. Made for aircon malls and late rides home."
-  },
-  {
-    id: "cs-016", name: "Sticker Pack Vol. 1", category: "accessory",
-    price: 120, salePrice: null, sizes: ["One size"], stock: "in", isNew: false, added: "2026-10-01",
-    images: [], color: "#B3121B", accent: "#FFFFFF",
-    description: "Six waterproof vinyl stickers. Slap them on your laptop, helmet or tumbler."
-  },
-  {
-    id: "cs-017", name: "Cap Clip Strap", category: "accessory",
-    price: 180, salePrice: null, sizes: ["One size"], stock: "in", isNew: false, added: "2026-10-03",
-    images: [], color: "#1B1B1B", accent: "#B3121B",
-    description: "Clip your cap to your bag so it keeps its shape and leaves your hands free."
-  },
-  {
-    id: "cs-018", name: "Cap Care Kit", category: "accessory",
-    price: 350, salePrice: null, sizes: ["One size"], stock: "low", isNew: false, added: "2026-10-10",
-    images: [], color: "#2A2A2A", accent: "#FFFFFF",
-    description: "Soft brush, gentle cleaner and a crown shaper. Everything in our cap cleaning guide, in one box."
+    id: "cs-010", name: "'47 Brand Florida Gators Rope Cap", category: "college",
+    price: 1140, salePrice: null, sizes: ["One size / adjustable"], stock: "in", isNew: false, added: "2026-09-15",
+    images: ["images/products/47-florida-gators-rope.jpg"], color: "#F2F2F2", accent: "#0021A5",
+    description: "White crown, royal blue brim and white rope. Gators Florida in an orange-to-blue fade over the gator head."
   }
 ];

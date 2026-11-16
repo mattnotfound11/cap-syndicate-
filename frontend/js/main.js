@@ -29,6 +29,7 @@
   const isPlaceholder = (v) => !v || /\[(ADD|EDIT)[^\]]*\]/i.test(String(v));
   const validEmail = (v) => /^[^\s@<>()]+@[^\s@<>()]+\.[a-z]{2,}$/i.test(String(v || "").trim());
   const catName = (id) => (CATS.find((c) => c.id === id) || {}).name || id;
+  const activeCats = () => CATS.filter((c) => PRODUCTS.some((p) => p.category === c.id));
   const catArt = (id) => (CATS.find((c) => c.id === id) || {}).art || "snapback";
   const findProduct = (id) => PRODUCTS.find((p) => p.id === id);
   const onSale = (p) => typeof p.salePrice === "number" && p.salePrice < p.price;
@@ -131,7 +132,12 @@
     });
 
     const deal = S.weeklyDeal || {};
-    $$("[data-promo-code]").forEach((el) => { el.textContent = deal.code || ""; });
+    $$("[data-promo-code]").forEach((el) => {
+      el.textContent = deal.code || "";
+      // No code this week: hide the code box (and its copy button) instead of showing an empty one
+      const box = el.closest(".promo-box") || el.closest(".promo-row");
+      if (box) box.hidden = !deal.code;
+    });
     $$("[data-deal-title]").forEach((el) => { el.textContent = deal.title || ""; });
     $$("[data-deal-desc]").forEach((el) => { el.textContent = deal.description || ""; });
     $$("[data-drop-name]").forEach((el) => {
@@ -338,14 +344,28 @@
 
     const tiles = $("#category-tiles");
     if (tiles) {
-      /* 7 categories: first three wide (3 across), last four narrow (4 across) so the grid has no empty cell */
-      tiles.innerHTML = CATS.map((c, i) => {
-        const n = PRODUCTS.filter((p) => p.category === c.id).length;
-        return `<a class="cat-tile ${i < 3 ? "cat-tile--lg" : "cat-tile--sm"}" href="products.html?cat=${encodeURIComponent(c.id)}">
-          ${artSVG(c.art, i % 2 ? "#262626" : "#B3121B", i % 2 ? "#B3121B" : "#ffffff", { bg: false, cls: "cat-art", decorative: true })}
-          <span class="cat-label"><h3>${esc(c.name)}</h3><span class="count">${n} ${n === 1 ? "item" : "items"}</span></span>
+      /* Only categories that have products, on a 12-column grid with no empty cells:
+         up to 4 share one row; otherwise the first row takes 2 (or 4) tiles so the rest fill rows of 3.
+         Mobile is 2 across, with the first tile full width when the count is odd. */
+      const cats = activeCats();
+      const n = cats.length;
+      const firstRow = n <= 4 ? n : n % 3 === 2 ? 2 : n % 3 === 1 ? 4 : 3;
+      const spans = cats.map((_, i) => (i < firstRow ? 12 / firstRow : 4));
+      tiles.innerHTML = cats.map((c, i) => {
+        const items = PRODUCTS.filter((p) => p.category === c.id);
+        const photo = items.map((p) => (Array.isArray(p.images) ? p.images[0] : "")).find(Boolean);
+        const media = photo
+          ? `<img class="cat-photo" src="${esc(photo)}" alt="" loading="lazy" decoding="async">`
+          : artSVG(c.art, i % 2 ? "#262626" : "#B3121B", i % 2 ? "#B3121B" : "#ffffff", { bg: false, cls: "cat-art", decorative: true });
+        return `<a class="cat-tile${spans[i] >= 6 ? " cat-tile--lg" : ""}" href="products.html?cat=${encodeURIComponent(c.id)}">
+          ${media}
+          <span class="cat-label"><h3>${esc(c.name)}</h3><span class="count">${items.length} ${items.length === 1 ? "item" : "items"}</span></span>
         </a>`;
       }).join("");
+      $$(".cat-tile", tiles).forEach((el, i) => {
+        el.style.setProperty("--span", spans[i]);
+        el.style.setProperty("--span-m", n % 2 && i === 0 ? 2 : 1);
+      });
       $$("svg.cat-art", tiles).forEach((svg) => svg.setAttribute("preserveAspectRatio", "xMidYMin meet"));
     }
   }
@@ -370,7 +390,7 @@
     const meta = $("#results-count");
     const empty = $("#empty-state");
 
-    chips.innerHTML = [{ id: "all", name: "All" }, ...CATS].map((c) => {
+    chips.innerHTML = [{ id: "all", name: "All" }, ...activeCats()].map((c) => {
       const n = c.id === "all" ? PRODUCTS.length : PRODUCTS.filter((p) => p.category === c.id).length;
       return `<button class="chip" type="button" data-cat="${esc(c.id)}" aria-pressed="false">${esc(c.name)} <span class="muted">(${n})</span></button>`;
     }).join("");
@@ -503,7 +523,7 @@
           <p class="desc">${esc(p.description)}</p>
           <form class="stack" data-add-form="${esc(p.id)}" novalidate>
             <fieldset class="size-options">
-              <legend><span>${sizes.length > 1 ? "Pick your size" : "Size"}</span>${["fitted", "bucket", "snapback", "dad-cap"].includes(p.category) ? '<a href="tips.html#size-guide">Size guide</a>' : ""}</legend>
+              <legend><span>${sizes.length > 1 ? "Pick your size" : "Size"}</span><a href="tips.html#size-guide">Size guide</a></legend>
               <div class="size-list">${sizes.map((s, i) => `
                 <label><input type="radio" name="size" value="${esc(s)}" ${sizes.length === 1 && i === 0 ? "checked" : ""} ${out ? "disabled" : ""}><span>${esc(s)}</span></label>`).join("")}
               </div>
