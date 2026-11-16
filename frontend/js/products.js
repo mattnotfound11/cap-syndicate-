@@ -35,6 +35,13 @@ window.SHOP_SETTINGS = {
   // Leave "" and the forms open the visitor's email app instead (nothing is lost).
   formEndpoint: "",
 
+  // Rotating bar under the header. Add, remove or reword messages freely. href is optional.
+  announcements: [
+    { text: "Use code SYNDICATE10 for 10% off all caps", href: "deals.html" },
+    { text: "New drops every week. Turn on drop alerts", href: "deals.html#signup-title" },
+    { text: "Free pickup in store. Ships nationwide", href: "contact.html#faq" }
+  ],
+
   // Shows a yellow "sample catalog" notice on the shop page. Set to false once real photos/prices are in.
   showSampleNotice: true,
 

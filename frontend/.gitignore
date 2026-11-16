@@ -47,3 +47,5 @@ pnpm-debug.log*
 *.swp
 .DS_Store
 Thumbs.db
+.vercel
+.env*

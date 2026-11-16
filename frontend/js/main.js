@@ -140,18 +140,7 @@
     });
     $$("[data-drop-desc]").forEach((el) => { el.textContent = (S.nextDrop || {}).description || ""; });
 
-    const topbar = $("[data-topbar]");
-    if (topbar && deal.code) {
-      topbar.textContent = "";
-      topbar.append("This week: ");
-      const strong = document.createElement("strong");
-      strong.textContent = deal.code;
-      topbar.append(strong, ` gets you ${deal.title ? deal.title.toLowerCase() : "a discount"}. `);
-      const a = document.createElement("a");
-      a.href = "deals.html";
-      a.textContent = "See deals";
-      topbar.append(a);
-    }
+    setupAnnouncements();
 
     $$("iframe[data-map]").forEach((frame) => {
       const q = encodeURIComponent(S.mapQuery || "Iloilo City, Philippines");
@@ -160,6 +149,41 @@
     $$("[data-map-link]").forEach((a) => {
       a.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(S.mapQuery || "Iloilo City")}`;
     });
+  }
+
+  /* Rotating announcement bar under the header. Messages: SHOP_SETTINGS.announcements,
+     or a default built from the weekly deal. Arrows always work; auto-rotate stops for reduced motion. */
+  function setupAnnouncements() {
+    const el = $("[data-topbar]");
+    if (!el) return;
+    const deal = S.weeklyDeal || {};
+    const list = Array.isArray(S.announcements) && S.announcements.length
+      ? S.announcements
+      : [{ text: `Use code ${deal.code || ""} for ${String(deal.title || "a discount").toLowerCase()}`, href: "deals.html" }];
+    let i = 0;
+    let timer;
+    const show = (n) => {
+      i = (n + list.length) % list.length;
+      const msg = list[i];
+      el.textContent = "";
+      if (msg.href) {
+        const a = document.createElement("a");
+        a.href = msg.href;
+        a.textContent = msg.text;
+        el.append(a);
+      } else {
+        el.textContent = msg.text;
+      }
+    };
+    const restart = () => {
+      clearInterval(timer);
+      if (!reducedMotion && list.length > 1) timer = setInterval(() => show(i + 1), 5500);
+    };
+    $("[data-topbar-prev]")?.addEventListener("click", () => { show(i - 1); restart(); });
+    $("[data-topbar-next]")?.addEventListener("click", () => { show(i + 1); restart(); });
+    if (list.length < 2) $$(".topbar-btn").forEach((b) => { b.hidden = true; });
+    show(0);
+    restart();
   }
 
   /* ---------- 3. Icons + placeholder art ---------- */
@@ -221,7 +245,7 @@
         <circle cx="240" cy="330" r="24" fill="${c}"/>
         <text x="160" y="214" text-anchor="middle" font-family="Permanent Marker, cursive" font-size="22" fill="${a}">CS</text>
         <text x="240" y="214" text-anchor="middle" font-family="Permanent Marker, cursive" font-size="22" fill="#B3121B">CS</text>
-        <text x="200" y="281" text-anchor="middle" font-family="Anton, sans-serif" font-size="20" fill="${a}">SYNDICATE</text>
+        <text x="200" y="281" text-anchor="middle" font-family="Bebas Neue, sans-serif" font-size="20" fill="${a}">SYNDICATE</text>
       </g>`
   };
 
@@ -308,22 +332,21 @@
 
     const arrivals = $("#new-arrivals");
     if (arrivals) {
-      const list = [...PRODUCTS].sort((a, b) => String(b.added).localeCompare(String(a.added))).slice(0, 6);
+      const list = [...PRODUCTS].sort((a, b) => String(b.added).localeCompare(String(a.added))).slice(0, 4);
       renderCards(arrivals, list);
     }
 
     const tiles = $("#category-tiles");
     if (tiles) {
-      const layout = ["cat-tile--feature", "", "cat-tile--red", "", "", "cat-tile--wide", "cat-tile--wide cat-tile--red"];
+      /* 7 categories: first three wide (3 across), last four narrow (4 across) so the grid has no empty cell */
       tiles.innerHTML = CATS.map((c, i) => {
         const n = PRODUCTS.filter((p) => p.category === c.id).length;
-        return `<a class="cat-tile ${layout[i] || ""}" href="products.html?cat=${encodeURIComponent(c.id)}">
-          ${artSVG(c.art, i % 2 ? "#2a2a2a" : "#B3121B", i % 2 ? "#B3121B" : "#ffffff", { bg: false, cls: "cat-art", decorative: true })}
-          <h3>${esc(c.name)}</h3>
-          <span class="count">${n} ${n === 1 ? "item" : "items"}</span>
+        return `<a class="cat-tile ${i < 3 ? "cat-tile--lg" : "cat-tile--sm"}" href="products.html?cat=${encodeURIComponent(c.id)}">
+          ${artSVG(c.art, i % 2 ? "#262626" : "#B3121B", i % 2 ? "#B3121B" : "#ffffff", { bg: false, cls: "cat-art", decorative: true })}
+          <span class="cat-label"><h3>${esc(c.name)}</h3><span class="count">${n} ${n === 1 ? "item" : "items"}</span></span>
         </a>`;
       }).join("");
-      $$("svg.cat-art", tiles).forEach((svg) => svg.setAttribute("preserveAspectRatio", "xMaxYMid meet"));
+      $$("svg.cat-art", tiles).forEach((svg) => svg.setAttribute("preserveAspectRatio", "xMidYMin meet"));
     }
   }
 
@@ -407,6 +430,7 @@
     }));
 
     apply();
+    if (params.get("search")) search.focus();
     const item = params.get("item");
     if (item && findProduct(item)) openProduct(item);
   }
