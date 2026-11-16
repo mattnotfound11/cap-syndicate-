@@ -1,19 +1,11 @@
 # Backend
 
-API and server-side services for Cap Syndicate.
+Not used yet. The Cap Syndicate site in `../frontend` is fully static: orders go through Messenger or email, and forms can post to a free form service (see `frontend/README.md`, "Forms").
 
-## Getting started
+This folder is reserved for when the shop needs a server, for example:
 
-```bash
-cd backend
-# install dependencies
-# run the server
-```
+- a real order or inventory API instead of editing `frontend/js/products.js` by hand
+- a drop-alerts mailing list with unsubscribe links
+- online payments (GCash, Maya or cards) through a payment provider
 
-## Structure
-
-_To be documented once the framework is chosen._
-
-## Environment variables
-
-Copy `.env.example` to `.env` and fill in values. Never commit real secrets.
+Keep secrets in a `.env` file (already in `.gitignore`) and never commit them.
