@@ -1565,3 +1565,90 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
 .crew-feature-copy p { max-width: 42ch; }
 @media (min-width: 768px) { .crew-feature-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1024px) { .crew-feature-copy { padding: 56px 64px; } }
+
+/* ==========================================================================
+   33. MOBILE SPACING + ALIGNMENT FIXES (phones only, under 768px)
+   - Section padding was 88px top and bottom, so neighbouring sections sat
+     about 176px apart and the sign-up block plus footer left ~160px of dead
+     space. Tightened to one consistent rhythm.
+   - Product cards: price/size/button now line up across a row even when
+     one name wraps to more lines than its neighbour.
+   - Countdown boxes stay on one row.
+   ========================================================================== */
+@media (max-width: 767px) {
+  .section { padding-block: 48px; }
+  .section--tight { padding-block: 32px; }
+  .page-hero { padding-block: 40px 32px; }
+  .hero--full { min-height: 0; }
+  .hero-center { padding-block: 32px 40px; }
+  .section-title { margin-bottom: 32px; }
+  .section-head, .section-bar { margin-bottom: 24px; }
+  .section-cta { margin-top: 32px; }
+  .trust-grid { padding-block: 40px; gap: 32px 16px; }
+  .site-footer { padding-block: 48px 28px; }
+  .footer-top { gap: 32px; }
+  .footer-bottom { margin-top: 32px; }
+
+  /* product cards: name area grows, so price, sizes and button share one baseline per row */
+  .product-grid { gap: 32px 12px; }
+  .p-card { height: 100%; }
+  .p-info { flex: 1; align-content: start; grid-template-rows: auto 1fr auto auto; }
+  .p-card .btn { margin-top: 0; }
+
+  /* category links: a centered row that overflows clips its first item (MLB); start from the left so it can scroll */
+  .hero-links ul { justify-content: flex-start; }
+
+  /* countdown: four equal boxes on one row */
+  .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: 100%; max-width: 360px; }
+  .countdown-unit { min-width: 0; padding-inline: 4px; }
+}
+
+/* ==========================================================================
+   34. LIVE HERO (home): smoke background + live logo, text and buttons.
+   Fonts match the campaign banner: Bebas Neue (headline, buttons),
+   Inter Light (subline), IBM Plex Mono (corner text).
+   >= 900px: a 1880 x 836 stage; positions are % of it and sizes are cqw
+   (1cqw = 1% of the stage width), so it looks like the banner at any width.
+   < 900px: stacked layout on the same background.
+   ========================================================================== */
+.hero--live { display: block; min-height: 0; padding: 0; background: #000; }
+.hero-stage { position: relative; container-type: inline-size; overflow: hidden; background: #000; color: #f7f7f7; display: grid; justify-items: center; gap: 18px; padding: 40px 16px 44px; }
+.hs-bg, .hs-bg img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hs-bg img { object-fit: cover; object-position: 50% 50%; }
+.hs-marks, .hs-side { display: none; }
+.hs-logo, .hs-title, .hs-sub, .hs-btn { position: relative; z-index: 1; }
+.hs-logo { width: min(80vw, 400px); height: auto; }
+.hero--live .hs-title { margin: 0; font: 400 clamp(20px, 6.6vw, 48px)/1.05 "Bebas Neue", "Arial Narrow", sans-serif; letter-spacing: 0.27em; text-indent: 0.27em; text-transform: uppercase; text-align: center; color: #f7f7f7; white-space: nowrap; }
+.hs-red { color: #db0101; }
+.hero--live .hs-title .hs-red { display: inline; }  /* older `.hero h1 span` rule makes spans block */
+.hs-sub { margin: 0; max-width: 34ch; font: 300 clamp(13px, 3.3vw, 18px)/1.5 "Inter", system-ui, sans-serif; letter-spacing: 0.1em; text-align: center; color: #f2f2f2; }
+.hs-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 clamp(20px, 6vw, 40px); font: 400 clamp(17px, 4.4vw, 22px)/1 "Bebas Neue", "Arial Narrow", sans-serif; letter-spacing: 0.2em; text-indent: 0.2em; text-transform: uppercase; text-decoration: none; color: #fff; }
+.hs-btn--shop { background: #d60000; }
+.hs-btn--shop:hover { background: #ee0a0a; }
+.hs-btn--ghost { border: 1.5px solid #f4f5f4; background: rgba(0, 0, 0, 0.55); }
+.hs-btn--ghost:hover { background: #fff; color: #000; }
+.hs-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.hs-btn--shop, .hs-btn--ghost { margin-top: 6px; }
+/* phones: the two buttons sit side by side under the text */
+.hs-cta { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.hero--live .hero-links { border-top: 1px solid var(--line); background: #000; }
+@media (max-width: 359px) { .hs-btn { padding-inline: 14px; font-size: 16px; letter-spacing: 0.16em; text-indent: 0.16em; } .hs-cta { gap: 8px; } }
+
+@media (min-width: 900px) {
+  .hero-stage { display: block; aspect-ratio: 1880 / 836; padding: 0; }
+  .hs-cta { display: contents; }
+  .hs-marks { display: block; position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+  .hs-side { display: block; position: absolute; z-index: 1; font: 400 1.12cqw/1.45 "IBM Plex Mono", ui-monospace, monospace; letter-spacing: 0.265em; text-transform: uppercase; color: #f4f4f4; }
+  .hs-side p { margin: 0; }
+  .hs-side--right p { letter-spacing: inherit; }
+  .hs-side--left { left: 2.77%; top: 39.9%; }
+  .hs-est { margin-bottom: 0.55cqw !important; }
+  .hs-side--right { right: 2.6%; top: 34.6%; text-align: right; letter-spacing: 0.157em; line-height: 1.33; }
+  .hs-globe { display: block; width: 6.81cqw; height: auto; margin: 0 0 0 auto; margin-bottom: 0.95cqw; }
+  .hs-logo { position: absolute; left: 31.0%; top: 13.16%; width: 38.56%; }
+  .hero--live .hs-title { position: absolute; left: 0; right: 0; top: 62%; font-size: 3.35cqw; line-height: 1; letter-spacing: 0.312em; text-indent: 0.312em; }
+  .hs-sub { position: absolute; left: 0; right: 0; top: 71.4%; max-width: none; font-size: 1.17cqw; line-height: 1.5; letter-spacing: 0.143em; text-indent: 0.143em; }
+  .hs-btn { position: absolute; top: 79.18%; height: 6.58%; min-height: 44px; margin: 0; padding: 0; font-size: 1.22cqw; letter-spacing: 0.352em; text-indent: 0.352em; }
+  .hs-btn--shop { left: 36.7%; width: 11.97%; }
+  .hs-btn--ghost { left: 50.43%; width: 12.82%; font-size: 1.06cqw; letter-spacing: 0.251em; text-indent: 0.251em; }
+}
