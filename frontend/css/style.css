@@ -1652,3 +1652,35 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
   .hs-btn--shop { left: 36.7%; width: 11.97%; }
   .hs-btn--ghost { left: 50.43%; width: 12.82%; font-size: 1.06cqw; letter-spacing: 0.251em; text-indent: 0.251em; }
 }
+
+/* ==========================================================================
+   35. PHONE SAFE AREAS + HERO LINKS (iPhone Safari and similar)
+   The pages use viewport-fit=cover, so content reaches the very top and bottom of the screen.
+   Without this, Safari left a ~60px strip above the sticky header where products scrolled
+   through. The header now starts at the screen edge and pads itself below the status bar.
+   env() is 0 on desktop and on phones without a notch, so nothing changes there.
+   ========================================================================== */
+.site-header { padding-top: env(safe-area-inset-top, 0px); }
+.container { padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+.drawer-head { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+.drawer-foot { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+.search-overlay { padding-top: calc(24px + env(safe-area-inset-top, 0px)); }
+.site-footer { padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
+.toast { bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+.cookie-banner { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+.modal-scroll { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* Phones: all six category links visible at once (3 x 2), 44px tap rows, no sideways scrolling */
+@media (max-width: 767px) {
+  .hero--live .hero-links ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; overflow: visible; padding-block: 0; }
+  .hero--live .hero-links li { border-top: 1px solid var(--line); }
+  .hero--live .hero-links li:nth-child(-n+3) { border-top: 0; }
+  .hero--live .hero-links a { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 4px; text-align: center; letter-spacing: 0.2em; font-size: 0.68rem; }
+}
+
+/* Phones: a nearly solid header (nothing shows through the status-bar area), and content never waits
+   on a scroll fade-in, so no blank bands appear while sections load */
+@media (max-width: 767px) {
+  .site-header { background: rgba(10, 10, 10, 0.97); }
+  .js .reveal, .js .reveal-stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
