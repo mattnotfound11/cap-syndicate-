@@ -532,7 +532,7 @@
             <div class="modal-actions">
               ${out
                 ? `<button class="btn btn--primary btn--block" type="button" data-ask-restock="${esc(p.id)}">${icon("messenger")}Ask about restock</button>`
-                : `<button class="btn btn--primary btn--block" type="submit">${icon("bag")}Add to order list</button>
+                : `<button class="btn btn--primary btn--block" type="submit">${icon("messenger")}Add &amp; message on Messenger</button>
                    <button class="btn btn--ghost btn--block" type="button" data-inquire="${esc(p.id)}">${icon("messenger")}Inquire on Messenger</button>`}
             </div>
           </form>
@@ -579,8 +579,9 @@
       err.hidden = true;
       if (addToCart(form.dataset.addForm, size)) {
         modal.close();
-        toast("Added to your order list");
         bumpCartButton();
+        // Added to the list, now send it to the shop's Messenger (same message the cart's checkout sends)
+        sendToMessenger(orderMessage());
       }
     });
     $(".modal-close", modal).addEventListener("click", () => modal.close());
@@ -693,7 +694,7 @@
       const quick = e.target.closest("[data-quick-add]");
       if (quick) {
         const p = findProduct(quick.dataset.quickAdd);
-        if (p && addToCart(p.id, p.sizes[0])) { toast("Added to your order list"); bumpCartButton(); }
+        if (p && addToCart(p.id, p.sizes[0])) { bumpCartButton(); sendToMessenger(orderMessage()); }
       }
     });
     drawer.addEventListener("click", (e) => {
