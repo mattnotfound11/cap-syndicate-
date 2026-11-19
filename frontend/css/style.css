@@ -1684,3 +1684,11 @@ h2, .h2 { font-size: clamp(2.2rem, 7vw, 3.6rem); }
   .site-header { background: rgba(10, 10, 10, 0.97); }
   .js .reveal, .js .reveal-stagger > * { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+/* Crew: two people, so two wider columns instead of four; photos show their whole face, framed 4:5 */
+.crew-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
+.crew-photo { border-style: solid; }
+.crew-photo picture { display: block; position: absolute; inset: 0; }
+.crew-photo picture img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.crew-card h3 { text-align: center; }
+@media (min-width: 1024px) { .crew-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; } }

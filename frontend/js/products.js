@@ -17,9 +17,9 @@ window.SHOP_SETTINGS = {
 
   // Contact details (from the shop's Instagram). These fill every [data-setting="..."] spot on the site.
   address: "25 Gen. Luna Ave, Iloilo City Proper, Iloilo City (beside Celestial Creations)",
-  hours: "Open daily, 11:30 AM to 8:00 PM [EDIT: confirm, Instagram posts list different hours]",
+  hours: "Open daily, 11:30 AM to 8:00 PM",
   phone: "0916 574 2695",
-  email: "[ADD EMAIL HERE]",          // e.g. "capsyndicate.ph@gmail.com". Order emails go here.
+  email: "capsyndicate@gmail.com",   // order emails, the contact form and drop-alert sign-ups go here
 
   // Social links
   facebookUrl: "https://www.facebook.com/profile.php?id=61573261537346",
